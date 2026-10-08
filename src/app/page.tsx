@@ -1,69 +1,121 @@
+import { Suspense } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { signIn } from "./actions";
 
-export default function Home() {
+function LoginError({ error }: { error: string | undefined }) {
+  if (!error) return null;
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <div
+      role="alert"
+      className="flex items-start gap-2 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700"
+    >
+      <span className="shrink-0 mt-0.5">⚠</span>
+      <span>{decodeURIComponent(error)}</span>
+    </div>
+  );
+}
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f0faf3] px-4">
+      <div className="w-full max-w-sm space-y-7">
+
+        {/* Logo + Brand */}
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-24 h-24 rounded-2xl bg-white shadow-md border border-green-100 flex items-center justify-center overflow-hidden">
             <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+              src="/logo.png"
+              alt="Kamali's Flowers logo"
+              width={88}
+              height={88}
+              className="object-contain"
+              priority
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-green-900">
+              Kamali&apos;s Flowers
+            </h1>
+            <p className="text-sm text-green-700/70 mt-1">
+              Sign in to your admin account
+            </p>
+          </div>
         </div>
-      </main>
+
+        {/* Card */}
+        <div className="bg-white rounded-2xl border border-green-100 shadow-sm overflow-hidden">
+          <div className="h-1.5 w-full bg-gradient-to-r from-green-500 to-emerald-400" />
+          <div className="p-8 space-y-5">
+
+            <Suspense fallback={null}>
+              <LoginError error={error} />
+            </Suspense>
+
+            <form action={signIn} className="space-y-4">
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-semibold text-green-900"
+                >
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="kavindurideesh@gmail.com"
+                  className="w-full rounded-lg border border-green-200 bg-green-50 px-3.5 py-2.5 text-sm text-green-900 placeholder:text-green-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-semibold text-green-900"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  placeholder="••••••••"
+                  className="w-full rounded-lg border border-green-200 bg-green-50 px-3.5 py-2.5 text-sm text-green-900 placeholder:text-green-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="mt-1 w-full rounded-lg bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-semibold text-sm py-2.5 transition focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              >
+                Sign in
+              </button>
+              <div className="text-center pt-2">
+                <Link href="/forgot-password" className="text-sm font-medium text-green-600 hover:text-green-800 transition">
+                  Forgot your password?
+                </Link>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-green-700/50">
+          Kamali&apos;s Flowers &copy; {new Date().getFullYear()} &mdash; Admin Portal
+        </p>
+      </div>
     </div>
   );
 }
