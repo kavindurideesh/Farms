@@ -1,4 +1,4 @@
-﻿import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import OrdersClient from "./OrdersClient";
 import Link from "next/link";
 
@@ -17,7 +17,7 @@ export default async function OrdersPage() {
     .from("orders")
     .select(`
       id, buyer_id, delivery_date, status, total_amount,
-      buyer:buyers(name),
+      buyer:buyers(id, name, phone, address),
       items:order_items(
         flower_id, quantity, rate,
         flower:flowers(name, unit)

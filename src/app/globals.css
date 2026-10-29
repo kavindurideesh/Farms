@@ -24,3 +24,210 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.ledger-print-header,
+.ledger-print-only,
+.ledger-print-value,
+.ledger-print-totals {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    print-color-adjust: exact;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  #ledger-print-root,
+  #ledger-print-root * {
+    visibility: visible !important;
+  }
+
+  #ledger-print-root {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #ledger-print-root .ledger-print-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 0 18px;
+    border-bottom: 3px solid #166534;
+    color: #111 !important;
+  }
+
+  #ledger-print-root .ledger-company {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  #ledger-print-root .ledger-company h1 {
+    margin: 0 0 6px;
+    color: #14532d !important;
+    font-size: 21px;
+    letter-spacing: 0.01em;
+  }
+
+  #ledger-print-root .ledger-company p,
+  #ledger-print-root .ledger-invoice-meta p {
+    margin: 3px 0;
+    color: #374151 !important;
+    font-size: 10px;
+  }
+
+  #ledger-print-root .ledger-invoice-meta {
+    min-width: 190px;
+    text-align: right;
+  }
+
+  #ledger-print-root .ledger-invoice-meta .ledger-invoice-label {
+    margin-bottom: 8px;
+    color: #14532d !important;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  #ledger-print-root .ledger-print-logo {
+    width: 82px;
+    height: 82px;
+    object-fit: contain;
+  }
+
+  #ledger-print-root .ledger-summary {
+    display: none !important;
+  }
+
+  #ledger-print-root .ledger-screen-only {
+    display: none !important;
+  }
+
+  #ledger-print-root .ledger-print-value {
+    display: inline !important;
+  }
+
+  #ledger-print-root .ledger-print-totals {
+    display: block !important;
+    width: 48%;
+    margin: 18px 0 0 auto;
+    padding-top: 8px;
+    border-top: 1px solid #9ca3af;
+    break-inside: avoid;
+  }
+
+  #ledger-print-root .ledger-print-totals p {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    margin: 0;
+    padding: 6px 0;
+    color: #374151 !important;
+    font-size: 11px;
+  }
+
+  #ledger-print-root .ledger-print-totals strong {
+    color: #111 !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  #ledger-print-root .ledger-print-totals .ledger-print-balance {
+    margin-top: 4px;
+    padding: 10px 12px;
+    border-top: 2px solid #166534;
+    background: #f0fdf4 !important;
+    color: #14532d !important;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  #ledger-print-root .ledger-print-totals .ledger-print-balance strong {
+    color: #14532d !important;
+  }
+
+  #ledger-print-root .ledger-print-currency {
+    justify-content: flex-end;
+    color: #6b7280 !important;
+    font-size: 9px !important;
+  }
+
+  #ledger-print-root .ledger-table-shell {
+    overflow: visible !important;
+  }
+
+  #ledger-print-root .ledger-table-shell > table {
+    border: 1px solid #d1d5db;
+  }
+
+  #ledger-print-root table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+  }
+
+  #ledger-print-root thead {
+    display: table-header-group;
+  }
+
+  #ledger-print-root thead tr {
+    background: #e8f3eb !important;
+  }
+
+  #ledger-print-root tr {
+    break-inside: avoid;
+  }
+
+  #ledger-print-root th,
+  #ledger-print-root td {
+    padding: 9px 10px !important;
+    color: #111 !important;
+    border-bottom: 1px solid #d1d5db !important;
+    border-right: 1px solid #e5e7eb;
+  }
+
+  #ledger-print-root th {
+    color: #14532d !important;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+
+  #ledger-print-root th:nth-child(n + 3),
+  #ledger-print-root td:nth-child(n + 3) {
+    text-align: right;
+  }
+
+  #ledger-print-root td:first-child {
+    white-space: nowrap;
+  }
+
+  #ledger-print-root .bg-white,
+  #ledger-print-root .shadow-sm {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #ledger-print-root .ledger-table-shell > table {
+    break-inside: auto;
+  }
+}

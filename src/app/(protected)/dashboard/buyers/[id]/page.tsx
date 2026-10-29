@@ -17,7 +17,13 @@ export default async function BuyerLedgerPage({ params }: { params: Promise<{ id
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: orders } = await (supabase as any)
     .from("orders")
-    .select("id, delivery_date, total_amount, status")
+    .select(`
+      id, delivery_date, total_amount, status,
+      items:order_items(
+        quantity, rate,
+        flower:flowers(name, unit)
+      )
+    `)
     .eq("buyer_id", buyerId)
     .neq("status", "Cancelled")
     .order("delivery_date", { ascending: true });
@@ -38,13 +44,43 @@ export default async function BuyerLedgerPage({ params }: { params: Promise<{ id
   for (const o of (orders || [])) {
     const amount = Number(o.total_amount);
     totalOrders += amount;
-    ledger.push({
-      id: o.id,
-      type: "Order" as const,
-      date: o.delivery_date,
-      amount: amount,
-      description: `Order #${o.id.substring(0,6).toUpperCase()} (${o.status})`,
-      is_debit: true,
+    const items = o.items || [];
+
+    if (items.length === 0) {
+      ledger.push({
+        id: o.id,
+        type: "Order" as const,
+        date: o.delivery_date,
+        amount,
+        description: `Order #${o.id.substring(0, 6).toUpperCase()} (${o.status})`,
+        flowerType: null,
+        unit: null,
+        unitPrice: null,
+        quantity: null,
+        is_debit: true,
+      });
+      continue;
+    }
+
+    items.forEach((item: {
+      quantity: number;
+      rate: number;
+      flower: { name: string; unit: string } | null;
+    }, index: number) => {
+      const unitPrice = Number(item.rate);
+      const quantity = Number(item.quantity);
+      ledger.push({
+        id: `${o.id}-${index}`,
+        type: "Order" as const,
+        date: o.delivery_date,
+        amount: unitPrice * quantity,
+        description: `Order #${o.id.substring(0, 6).toUpperCase()} (${o.status})`,
+        flowerType: item.flower?.name || "Unknown flower",
+        unit: item.flower?.unit || null,
+        unitPrice,
+        quantity,
+        is_debit: true,
+      });
     });
   }
 
@@ -57,6 +93,10 @@ export default async function BuyerLedgerPage({ params }: { params: Promise<{ id
       date: d.date,
       amount: amount,
       description: d.notes || "Payment Received",
+      flowerType: d.notes || "Payment Received",
+      unit: null,
+      unitPrice: null,
+      quantity: null,
       is_debit: false,
     });
   }
@@ -80,6 +120,8 @@ export default async function BuyerLedgerPage({ params }: { params: Promise<{ id
 
       <LedgerClient 
         buyerId={buyerId}
+        buyerName={buyer.name}
+        statementDate={new Date().toISOString().slice(0, 10)}
         ledger={ledger}
         totalOrders={totalOrders}
         totalDeposits={totalDeposits}
